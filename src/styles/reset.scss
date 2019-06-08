@@ -1,0 +1,36 @@
+body {
+  text-decoration-skip: none;
+  text-decoration-skip-ink: none;
+}
+
+body,
+a,
+button {
+  color: inherit;
+}
+
+* {
+  outline: none;
+}
+
+a {
+  text-decoration: none;
+
+  &:hover {
+    color: black;
+  }
+
+  &:active {
+    color: black;
+    transition: color 0s;
+  }
+}
+
+button {
+  padding: 0;
+
+  display: block;
+  background: transparent;
+  border: 0;
+  outline: none;
+}
