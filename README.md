@@ -1,4 +1,7 @@
-# hach-2019
+# hack-2019
+
+# Demo:
+http://kaktusv6.beget.tech
 
 ## Project setup
 ```
