@@ -1,6 +1,6 @@
 <template>
   <div class="form">
-    <b-field class="slider-range">
+    <b-field class="slider-range" label="Выберите дату">
       <vue-slider
         v-model="datePick"
         :data="dates"
