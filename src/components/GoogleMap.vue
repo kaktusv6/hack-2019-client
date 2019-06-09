@@ -1,8 +1,18 @@
 <template>
-    <div id="map"></div>
+    <div class="map">
+        <div id="map"></div>
+        <div id="legend" ref="legend" v-if="symptoms.length > 0">
+            <div class="legend-item" v-for="(symptom, index) in symptoms" :key="index">
+                <div class="color" :style="{ 'background-color': colorsSymptoms[index] }"></div>
+                <div class="name">{{ symptom }}</div>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script>
+
+  import randomColor from 'random-color'
 
   export default {
     name: 'GoogleMap',
@@ -15,20 +25,21 @@
         map: null,
         geocoder: null,
         circles: [],
-        symptoms: []
+        symptoms: [],
+        colorsSymptoms: []
       }
     },
     methods: {
       addCircle (data) {
         let regionCircleOption = {
-          strokeColor: "hsl(348, 100%, 61%)",
+          strokeColor: this.colorsSymptoms[this.symptoms.indexOf(data.symptom)],
           strokeOpacity: 1,
-          strokeWeight: 1,
+          strokeWeight: 2,
           clickable: true,
-          fillOpacity: .2,
+          fillOpacity: .1,
           map: this.map,
           center: { lat: parseFloat(data.lat), lng: parseFloat(data.lng) },
-          radius: parseInt(data.fact_interest) * 10000
+          radius: parseInt(data.fact_interest) * 20000
         }
 
         let circle = new google.maps.Circle(regionCircleOption)
@@ -44,20 +55,24 @@
           circle.setMap(null)
         })
         this.circles = []
-        for (let i in this.regions) {
-            let region = this.regions[i]
-            if (this.symptoms.indexOf(region.symptom)) {
-                
-            }
-        }
+
         for (let i in this.regions) {
           let data = this.regions[i]
           if (data.date === this.date) {
             this.circles.push(this.addCircle(data, data.key))
-            return;
           }
         }
-      }
+      },
+        initSymptoms () {
+            for (let i in this.regions) {
+                let region = this.regions[i]
+                if (this.symptoms.indexOf(region.symptom) < 0) {
+                    this.symptoms.push(region.symptom)
+                    let color = randomColor()
+                    this.colorsSymptoms.push(color.hexString())
+                }
+            }
+        }
     },
     mounted () {
       const element = document.getElementById('map')
@@ -74,10 +89,36 @@
   #map {
     width: 100%;
     height: 500px;
-    margin-bottom: 100px;
+    margin-bottom: 20px;
   }
 
   .slider-range {
     margin-bottom: 50px !important;
   }
+
+  #legend {
+      width: 200px;
+      display: flex;
+      flex-direction: column;
+      padding: 15px;
+      margin-bottom: 50px;
+      background-color: #fff;
+      border: 1px solid lightgrey;
+  }
+    .legend-item {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .color {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+    }
+
+    .name {
+        font-size: 12px;
+    }
 </style>
