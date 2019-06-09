@@ -1,6 +1,6 @@
 # hack-2019
 
-# Demo:
+### Demo
 http://kaktusv6.beget.tech
 
 ## Project setup
