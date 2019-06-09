@@ -3,7 +3,7 @@
     <div class="section">
       <div class="columns">
         <div class="column is-10 is-offset-1">
-          <div class="map" v-if="!isLoad">
+          <div class="map">
             <GoogleMap :regions="dataSet" :date="date"></GoogleMap>
           </div>
           <Form v-if="!isLoad" :symptoms="symptoms" @data-set="getDataSet" @change-date="changeDate"></Form>
@@ -17,7 +17,6 @@
   import GoogleMap from '../components/GoogleMap'
   import Form from '../components/Form'
   import axios from 'axios'
-  import colorspace from 'colorspace'
 
   export default {
     name: 'Home',
@@ -38,19 +37,22 @@
       async getSymptoms () {
         await axios.get('http://kaktusv6.beget.tech/symptoms.php').then((data) => {
           this.symptoms = data.data
-          this.symptoms.forEach((symptom) => {
-            symptom.color = colorspace('color:space')
-          })
         })
       },
       getDataSet (data) {
         this.dataSet = data
+        let mapComponent = this.getComponentByName('GoogleMap')
+        mapComponent.initSymptoms()
         this.isLoad = false
       },
       changeDate (date) {
         this.date = date
-        let mapComponent = this.$children.find(child => { return child.$options.name === "GoogleMap" })
+        let mapComponent = this.getComponentByName('GoogleMap')
+        mapComponent.initSymptoms()
         mapComponent.addCircles()
+      },
+      getComponentByName (name) {
+        return this.$children.find(child => { return child.$options.name === name })
       }
     },
     created () {
